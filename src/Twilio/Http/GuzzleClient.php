@@ -37,6 +37,10 @@ final class GuzzleClient implements Client {
                 $options['query'] = $params;
             }
 
+            if (strpos($url, 'https://video.twilio.com/v1/Compositions/') === 0) {
+                $options['allow_redirects'] = false;
+            }
+
             $response = $this->client->send(new Request($method, $url, $headers), $options);
         } catch (BadResponseException $exception) {
             $response = $exception->getResponse();
