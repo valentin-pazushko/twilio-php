@@ -9,12 +9,7 @@
 
 namespace Twilio\Rest;
 
-use Exception;
-use GuzzleHttp\Client as GuzzleHttpClient;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
 use Twilio\Exceptions\ConfigurationException;
-use Twilio\Exceptions\HttpException;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Http\Client as HttpClient;
 use Twilio\Http\CurlClient;
@@ -286,40 +281,6 @@ class Client {
         }
 
         return $response;
-    }
-
-    /**
-     * @param string $sid
-     *
-     * @return string
-     * @throws HttpException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getCompositionMediaLocation(string $sid): string {
-        $httpClient = new GuzzleHttpClient();
-        $request = new Request(
-            'GET',
-            "https://video.twilio.com/v1/Compositions/{$sid}/Media?Ttl=3600",
-            [
-                'User-Agent' => 'twilio-php/' . VersionInfo::string() . ' (PHP ' . PHP_VERSION . ')',
-                'Accept-Charset' => 'utf-8',
-                'Accept' => 'application/json',
-            ],
-        );
-
-        try {
-            $response = $httpClient->send($request, [
-                'timeout' => 60,
-                'allow_redirects' => false,
-                'auth' => [$this->username, $this->password],
-            ]);
-        } catch (BadResponseException $exception) {
-            $response = $exception->getResponse();
-        } catch (Exception $exception) {
-            throw new HttpException('Unable to complete the HTTP request', 0, $exception);
-        }
-
-        return (string)$response->getBody();
     }
 
     /**
